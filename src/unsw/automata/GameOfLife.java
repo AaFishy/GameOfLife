@@ -53,10 +53,10 @@ public class GameOfLife {
     private int countNeighbours(int x, int y) {
         int numNeighbours = 0;
 
-        int leftX = (x - 1 < 0) ? (x + 10) : (x - 1);
-        int rightX = (x + 1 > 9) ? (x - 10) : (x + 1);
-        int upY = (y - 1 < 0) ? (y + 10) : (y - 1);
-        int downY = (y + 1 > 9) ? (y - 10) : (y + 1);
+        int leftX = (x == 0) ? (9) : (x - 1);
+        int rightX = (x == 9) ? (0) : (x + 1);
+        int upY = (y == 0) ? (9) : (y - 1);
+        int downY = (y == 9) ? (0) : (y + 1);
 
         if (matrix[leftX][y]) numNeighbours++;
         if (matrix[leftX][upY]) numNeighbours++;
@@ -72,27 +72,30 @@ public class GameOfLife {
 
     public void tick() {
         // TODO Transition the game to the next generation.
+        boolean[][] tempMatrix = new boolean[10][10];
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 int numNeighbours = countNeighbours(x,y);
+                System.out.println("X = " + x + ", Y = " + y + ", numNeighbours = " + numNeighbours + ", state: " + matrix[x][y]);
                 if (matrix[x][y]) {
                     switch (numNeighbours) {
                         case 0:
                         case 1:
-                            matrix[x][y] = false;
+                            tempMatrix[x][y] = false;
                             break;
                         case 2:
                         case 3:
-                            matrix[x][y] = true;
+                            tempMatrix[x][y] = true;
                             break;
                         default:
-                            matrix[x][y] = false;
+                            tempMatrix[x][y] = false;
                     }
                 } else {
-                    if (numNeighbours == 3) matrix[x][y] = true;
+                    if (numNeighbours == 3) tempMatrix[x][y] = true;
                 }
             }
         }
+        matrix = tempMatrix;
     }
 
 }
