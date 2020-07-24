@@ -53,7 +53,7 @@ public class GameOfLife {
         else return false;
     }
 
-    private int countNeighbours(int x, int y) {
+    private int countNeighbours(int x, int y, BooleanProperty[][] matrix) {
         int numNeighbours = 0;
 
         int leftX = (x == 0) ? (9) : (x - 1);
@@ -76,31 +76,30 @@ public class GameOfLife {
 
     public void tick() {
         // TODO Transition the game to the next generation.
-        BooleanProperty[][] tempMatrix = new BooleanProperty[10][10];
+        BooleanProperty[][] tempMatrix = matrix;
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
-                int numNeighbours = countNeighbours(x,y);
+                int numNeighbours = countNeighbours(x,y,tempMatrix);
                 System.out.println("X = " + x + ", Y = " + y + ", numNeighbours = " + numNeighbours + ", state: " + matrix[x][y]);
-                if (matrix[x][y].getValue()) {
+                if (tempMatrix[x][y].getValue()) {
                     switch (numNeighbours) {
                         case 0:
                         case 1:
-                            tempMatrix[x][y] = new SimpleBooleanProperty(false);
+                            matrix[x][y] = new SimpleBooleanProperty(false);
                             break;
                         case 2:
                         case 3:
-                            tempMatrix[x][y] = new SimpleBooleanProperty(true);
+                            matrix[x][y] = new SimpleBooleanProperty(true);
                             break;
                         default:
-                            tempMatrix[x][y] = new SimpleBooleanProperty(false);
+                            matrix[x][y] = new SimpleBooleanProperty(false);
                     }
                 } else {
-                    if (numNeighbours == 3) tempMatrix[x][y] = new SimpleBooleanProperty(true);
-                    else tempMatrix[x][y] = new SimpleBooleanProperty(false);
+                    if (numNeighbours == 3) matrix[x][y] = new SimpleBooleanProperty(true);
+                    else matrix[x][y] = new SimpleBooleanProperty(false);
                 }
             }
         }
-        matrix = tempMatrix;
     }
 
     public BooleanProperty cellProperty(int x, int y) {
