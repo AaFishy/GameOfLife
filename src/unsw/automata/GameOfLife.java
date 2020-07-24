@@ -7,6 +7,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 /**
  * Conway's Game of Life on a 10x10 grid.
@@ -16,12 +17,13 @@ import javafx.beans.property.BooleanProperty;
  */
 public class GameOfLife {
     //private GridPane grid = new GridPane();
-    private boolean[][] matrix = new boolean[10][10];
+    private BooleanProperty[][] matrix = new SimpleBooleanProperty[10][10];
     public GameOfLife() {
         // TODO At the start all cells are dead
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
-                matrix[x][y] = false;
+                matrix[x][y] = new SimpleBooleanProperty(false);
+                System.out.println("x = " + x + "y = " + y + "matrix val = " + matrix[x][y].getValue()); 
             }
         }
         /*for (int x = 0; x < 10; x++) {
@@ -36,17 +38,18 @@ public class GameOfLife {
 
     public void ensureAlive(int x, int y) {
         // TODO Set the cell at (x,y) as alive
-        matrix[x][y] = true;
+        matrix[x][y].setValue(true);
+        System.out.println("X = " + x + ", Y = " + y + ", state: " + matrix[x][y]);
     }
 
     public void ensureDead(int x, int y) {
         // TODO Set the cell at (x,y) as dead
-        matrix[x][y] = false;
+        matrix[x][y].setValue(false);
     }
 
     public boolean isAlive(int x, int y) {
         // TODO Return true if the cell is alive
-        if (matrix[x][y]) return true;
+        if (matrix[x][y].getValue()) return true;
         else return false;
     }
 
@@ -57,45 +60,50 @@ public class GameOfLife {
         int rightX = (x == 9) ? (0) : (x + 1);
         int upY = (y == 0) ? (9) : (y - 1);
         int downY = (y == 9) ? (0) : (y + 1);
-
-        if (matrix[leftX][y]) numNeighbours++;
-        if (matrix[leftX][upY]) numNeighbours++;
-        if (matrix[leftX][downY]) numNeighbours++;
-        if (matrix[rightX][y]) numNeighbours++;
-        if (matrix[rightX][upY]) numNeighbours++;
-        if (matrix[rightX][downY]) numNeighbours++;
-        if (matrix[x][upY]) numNeighbours++;
-        if (matrix[x][downY]) numNeighbours++;
+        
+        System.out.println("Left = " + leftX);
+        if (matrix[leftX][y].getValue()) numNeighbours++;
+        if (matrix[leftX][upY].getValue()) numNeighbours++;
+        if (matrix[leftX][downY].getValue()) numNeighbours++;
+        if (matrix[rightX][y].getValue()) numNeighbours++;
+        if (matrix[rightX][upY].getValue()) numNeighbours++;
+        if (matrix[rightX][downY].getValue()) numNeighbours++;
+        if (matrix[x][upY].getValue()) numNeighbours++;
+        if (matrix[x][downY].getValue()) numNeighbours++;
 
         return numNeighbours;
     }
 
     public void tick() {
         // TODO Transition the game to the next generation.
-        boolean[][] tempMatrix = new boolean[10][10];
+        BooleanProperty[][] tempMatrix = new BooleanProperty[10][10];
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 int numNeighbours = countNeighbours(x,y);
                 System.out.println("X = " + x + ", Y = " + y + ", numNeighbours = " + numNeighbours + ", state: " + matrix[x][y]);
-                if (matrix[x][y]) {
+                if (matrix[x][y].getValue()) {
                     switch (numNeighbours) {
                         case 0:
                         case 1:
-                            tempMatrix[x][y] = false;
+                            tempMatrix[x][y] = new SimpleBooleanProperty(false);
                             break;
                         case 2:
                         case 3:
-                            tempMatrix[x][y] = true;
+                            tempMatrix[x][y] = new SimpleBooleanProperty(true);
                             break;
                         default:
-                            tempMatrix[x][y] = false;
+                            tempMatrix[x][y] = new SimpleBooleanProperty(false);
                     }
                 } else {
-                    if (numNeighbours == 3) tempMatrix[x][y] = true;
+                    if (numNeighbours == 3) tempMatrix[x][y] = new SimpleBooleanProperty(true);
+                    else tempMatrix[x][y] = new SimpleBooleanProperty(false);
                 }
             }
         }
         matrix = tempMatrix;
     }
 
+    public BooleanProperty cellProperty(int x, int y) {
+        return matrix[x][y];
+    }
 }
