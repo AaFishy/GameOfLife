@@ -7,7 +7,7 @@ The grid itself has a "wrap-around" behaviour such that cells at the edge of the
 In VSCode, you can run the GameOfLifeApplication main function:
 * Tick button will go through one tick of the simulation
 * Play button will go through a tick of the simulation every 0.5 seconds
-** Play button will turn into Stop button which will stop the simulation at that position
+    * Play button will turn into Stop button which will stop the simulation at that position
 
 ## What I learned:
 This was my first time touching upon javafx and how to link UI with code.
